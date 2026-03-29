@@ -37,7 +37,6 @@ venv.bak/
 # Project-specific Data & Models
 # Do not commit raw or processed datasets
 data/
-datasets/
 *.csv
 *.xlsx
 *.nii
