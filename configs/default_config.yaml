@@ -1,0 +1,20 @@
+model:
+  cnn_architecture: densenet121
+  mri_embedding_size: 256
+  tabular_model_type: xgboost
+
+paths:
+  model_save_dir: models/saved/
+  mri_data: data/raw/mri/
+  processed_dir: data/processed/
+  tabular_data: data/raw/tabular/alzheimers_disease_data.xlsx
+  test_dir: data/test/
+
+training:
+  batch_size: 16
+  epochs: 50
+  learning_rate_cnn: 0.0001
+  learning_rate_tabular: 0.05
+  seed: 42
+  test_split: 0.20        # 20% held out for professor demo
+  label_col: Diagnosis    # column name in the xlsx

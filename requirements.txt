@@ -1,0 +1,35 @@
+# Core Machine Learning
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# Medical Imaging / Processing
+nibabel>=5.1.0
+Pillow>=9.5.0
+
+# Data Download
+kagglehub>=0.2.0
+
+# Excel support
+openpyxl>=3.1.0
+
+# Tabular Data & Classical ML
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+
+# Explainability
+shap>=0.42.1
+grad-cam>=1.4.8
+
+# Model Export & Inference (CPU focus)
+onnx>=1.14.1
+onnxruntime>=1.15.1
+
+# Utilities & Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.2
+joblib>=1.3.1
+PyYAML>=6.0.1
+tqdm>=4.65.0

@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlzPredict AI — Multimodal Alzheimer's Risk Assessment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0d1a;
+      --card: #12162b;
+      --card2: #181d35;
+      --border: #252d52;
+      --accent: #6c63ff;
+      --accent2: #00d4aa;
+      --danger: #ff4d6d;
+      --warn: #ffa94d;
+      --safe: #20c997;
+      --text: #e8eaf6;
+      --muted: #7b87b8;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1a1f3e 0%, #0d1228 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .logo-text h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+    .logo-text p { font-size: 0.78rem; color: var(--muted); }
+    .badge {
+      margin-left: auto;
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.4);
+      color: var(--accent);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* LAYOUT */
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+
+    .arch-banner {
+      background: linear-gradient(135deg, #1a1f3e, #141930);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .arch-banner .arch-flow {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .arch-node {
+      background: rgba(108,99,255,0.12);
+      border: 1px solid rgba(108,99,255,0.35);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+    .arch-node span { display: block; color: var(--accent2); font-weight: 700; font-size: 0.85rem; }
+    .arch-arrow { color: var(--muted); font-size: 1.2rem; }
+    .arch-fuse {
+      background: linear-gradient(135deg, rgba(108,99,255,0.25), rgba(0,212,170,0.15));
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .arch-fuse span { color: var(--accent2); font-weight: 800; font-size: 0.9rem; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+
+    /* FORM */
+    .form-row { margin-bottom: 16px; }
+    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    input[type=range] {
+      width: 100%; accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .range-row { display: flex; justify-content: space-between; align-items: center; }
+    .range-val {
+      background: rgba(108,99,255,0.15);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 48px;
+      text-align: center;
+    }
+    select, input[type=number] {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    select:focus, input[type=number]:focus { border-color: var(--accent); }
+
+    .predict-btn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--accent), #9b59b6);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .predict-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .predict-btn:active { transform: translateY(0); }
+
+    /* RESULT PANEL */
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      grid-column: 1 / -1;
+      display: none;
+    }
+    .result-card.visible { display: block; }
+
+    .risk-display {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .gauge-wrap {
+      position: relative;
+      width: 160px; height: 160px;
+      flex-shrink: 0;
+    }
+    .gauge-wrap svg { transform: rotate(-90deg); }
+    .gauge-label {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .gauge-label .pct { font-size: 2.2rem; font-weight: 800; }
+    .gauge-label .sub { font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+
+    .risk-verdict {
+      flex: 1;
+    }
+    .risk-verdict .level {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .risk-verdict .desc { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+    .modality-bars { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 600px) { .modality-bars { grid-template-columns: 1fr; } }
+
+    .mod-bar-card {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .mod-bar-card .mod-title { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+    .mod-bar-card .mod-score { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .bar-track {
+      height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: 3px;
+      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .shap-section { }
+    .shap-title { font-size: 0.85rem; font-weight: 700; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.07em; }
+    .shap-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .shap-feat { font-size: 0.8rem; min-width: 160px; color: var(--text); }
+    .shap-bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .shap-bar-fill { height: 100%; border-radius: 4px; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+    .shap-val { font-size: 0.78rem; font-weight: 700; min-width: 42px; text-align: right; }
+
+    .disclaimer {
+      margin-top: 20px;
+      background: rgba(255,77,109,0.08);
+      border: 1px solid rgba(255,77,109,0.25);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .disclaimer strong { color: var(--danger); }
+
+    .pipeline-info {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .pipeline-info strong { color: var(--accent2); }
+
+    /* SPINNER */
+    .spinner-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,13,26,0.75);
+      z-index: 999;
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 18px;
+    }
+    .spinner-overlay.visible { display: flex; }
+    .spinner {
+      width: 52px; height: 52px;
+      border: 4px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .spinner-text { color: var(--muted); font-size: 0.88rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TABS */
+    .tab-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: rgba(108,99,255,0.2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">🧠</div>
+  <div class="logo-text">
+    <h1>AlzPredict AI</h1>
+    <p>Multimodal Alzheimer's Risk Assessment System</p>
+  </div>
+  <div class="badge">⚡ Demo Mode</div>
+</header>
+
+<div class="container">
+
+  <!-- Architecture Banner -->
+  <div class="arch-banner">
+    <div style="font-size:0.8rem; color:var(--muted); font-weight:600; min-width:100px;">MODEL PIPELINE</div>
+    <div class="arch-flow">
+      <div class="arch-node"><span>XGBoost</span>Clinical &amp; Genetics</div>
+      <div class="arch-arrow">+</div>
+      <div class="arch-node"><span>XGBoost</span>Lifestyle</div>
+      <div class="arch-arrow">+</div>
+      <div class="arch-node"><span>DenseNet-121</span>MRI Brain Scan</div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-fuse">Fusion MLP<br/><span>Risk Score</span></div>
+    </div>
+  </div>
+
+  <!-- Input Tabs + Result -->
+  <div class="tab-row">
+    <button class="tab-btn active" onclick="switchTab('clinical')">🔬 Clinical &amp; Genetic</button>
+    <button class="tab-btn" onclick="switchTab('lifestyle')">🌿 Lifestyle</button>
+    <button class="tab-btn" onclick="switchTab('mri')">🖥 MRI Scan</button>
+  </div>
+
+  <div class="grid">
+    <!-- CLINICAL TAB -->
+    <div class="tab-panel active" id="tab-clinical">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#6c63ff"></span>Clinical &amp; Genetic Features</div>
+        <div class="form-row">
+          <label>Age</label>
+          <div class="range-row">
+            <input type="range" id="age" min="50" max="95" value="68" oninput="sync('age','ageVal')">
+            <div class="range-val" id="ageVal">68</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>MMSE Score (cognitive test, 0–30)</label>
+          <div class="range-row">
+            <input type="range" id="mmse" min="0" max="30" value="24" oninput="sync('mmse','mmseVal')">
+            <div class="range-val" id="mmseVal">24</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>CDR Score (0=Normal, 3=Severe)</label>
+          <div class="range-row">
+            <input type="range" id="cdr" min="0" max="3" step="0.5" value="0.5" oninput="sync('cdr','cdrVal')">
+            <div class="range-val" id="cdrVal">0.5</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Memory Test Score (0–100)</label>
+          <div class="range-row">
+            <input type="range" id="memory" min="0" max="100" value="72" oninput="sync('memory','memoryVal')">
+            <div class="range-val" id="memoryVal">72</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>APOE Genotype</label>
+          <select id="apoe">
+            <option value="e2e3">ε2/ε3 (Protective)</option>
+            <option value="e3e3" selected>ε3/ε3 (Neutral)</option>
+            <option value="e3e4">ε3/ε4 (1x Risk↑)</option>
+            <option value="e4e4">ε4/ε4 (High Risk)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Gender</label>
+          <select id="gender">
+            <option value="male">Male</option>
+            <option value="female" selected>Female</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIFESTYLE TAB -->
+    <div class="tab-panel" id="tab-lifestyle">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#00d4aa"></span>Lifestyle Features</div>
+        <div class="form-row">
+          <label>Sleep Hours / Night</label>
+          <div class="range-row">
+            <input type="range" id="sleep" min="3" max="12" step="0.5" value="7" oninput="sync('sleep','sleepVal')">
+            <div class="range-val" id="sleepVal">7</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Physical Activity Level</label>
+          <select id="activity">
+            <option value="sedentary">Sedentary</option>
+            <option value="low">Low</option>
+            <option value="moderate" selected>Moderate</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Diet Quality Score (0–10)</label>
+          <div class="range-row">
+            <input type="range" id="diet" min="0" max="10" step="0.5" value="6.5" oninput="sync('diet','dietVal')">
+            <div class="range-val" id="dietVal">6.5</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Social Engagement (0–10)</label>
+          <div class="range-row">
+            <input type="range" id="social" min="0" max="10" step="0.5" value="5" oninput="sync('social','socialVal')">
+            <div class="range-val" id="socialVal">5</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Smoking Status</label>
+          <select id="smoking">
+            <option value="never" selected>Never</option>
+            <option value="former">Former Smoker</option>
+            <option value="current">Current Smoker</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Alcohol Consumption</label>
+          <select id="alcohol">
+            <option value="none" selected>None</option>
+            <option value="light">Light</option>
+            <option value="moderate">Moderate</option>
+            <option value="heavy">Heavy</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- MRI TAB -->
+    <div class="tab-panel" id="tab-mri">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#ffa94d"></span>MRI Brain Scan Input</div>
+        <div style="border:2px dashed var(--border); border-radius:12px; padding:36px; text-align:center; margin-bottom:16px; cursor:pointer; transition:border-color 0.2s;" id="dropzone" onclick="document.getElementById('mrifile').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+          <div style="font-size:3rem; margin-bottom:12px;">🖼️</div>
+          <div style="font-size:0.9rem; color:var(--muted);">Drop MRI image here or click to upload</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:6px;">Supports: PNG, TIFF, JPEG</div>
+          <input type="file" id="mrifile" accept=".png,.jpg,.jpeg,.tiff,.tif" style="display:none" onchange="handleFileSelect(event)">
+        </div>
+        <div id="mri-preview" style="display:none; text-align:center; margin-bottom:16px;">
+          <img id="mri-img" style="max-width:100%; max-height:220px; border-radius:10px; border:1px solid var(--border);" />
+          <div style="font-size:0.78rem; color:var(--accent2); margin-top:8px;" id="mri-fname"></div>
+        </div>
+        <div class="pipeline-info">
+          <strong>How it works:</strong> In the trained model, the MRI image is passed through a <strong>DenseNet-121 CNN</strong> to extract a <strong>256-dimensional embedding</strong>. This embedding encodes brain morphology features. For this demo, a simulated embedding is generated.
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Action + Pipeline Info -->
+    <div>
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#20c997"></span>Prediction</div>
+        <div class="pipeline-info" style="margin-bottom:20px;">
+          This demo simulates all three model branches:<br/>
+          <strong>Branch 1</strong> — XGBoost on clinical &amp; genetic features<br/>
+          <strong>Branch 2</strong> — XGBoost on lifestyle features<br/>
+          <strong>Branch 3</strong> — DenseNet-121 CNN on MRI scan<br/>
+          → All fused via a <strong>Multilayer Perceptron</strong>
+        </div>
+        <button class="predict-btn" onclick="runPrediction()">🧠 Run Alzheimer's Risk Analysis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT CARD -->
+  <div class="result-card" id="result-card">
+    <div class="card-title" style="margin-bottom:24px; font-size:1rem;">
+      <span class="dot" style="background:var(--accent2)"></span>
+      Model Output — Multimodal Risk Analysis
+    </div>
+
+    <div class="risk-display">
+      <div class="gauge-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="65" fill="none" stroke="#252d52" stroke-width="12"/>
+          <circle id="gauge-circle" cx="80" cy="80" r="65" fill="none" stroke="#6c63ff"
+            stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="408" stroke-dashoffset="408"
+            style="transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1), stroke 0.5s"/>
+        </svg>
+        <div class="gauge-label">
+          <div class="pct" id="pct-label">–</div>
+          <div class="sub">Risk Score</div>
+        </div>
+      </div>
+
+      <div class="risk-verdict">
+        <div class="level" id="risk-level">–</div>
+        <div class="desc" id="risk-desc">Run the analysis to see results.</div>
+        <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+          <div style="background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:8px;padding:8px 14px;font-size:0.78rem;">
+            <div style="color:var(--muted);">Clinical Model</div>
+            <div id="score-clinical" style="font-weight:700;font-size:1rem;">–</div>
+          </div>
+          <div style="background:rgba(0,212,170,0.1);border:1px solid rgba(0,212,170,0.3);border-radius:8px;padding:8px 14px;font-size:0.78rem;">
+            <div style="color:var(--muted);">Lifestyle Model</div>
+            <div id="score-lifestyle" style="font-weight:700;font-size:1rem;">–</div>
+          </div>
+          <div style="background:rgba(255,169,77,0.1);border:1px solid rgba(255,169,77,0.3);border-radius:8px;padding:8px 14px;font-size:0.78rem;">
+            <div style="color:var(--muted);">MRI Model</div>
+            <div id="score-mri" style="font-weight:700;font-size:1rem;">–</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHAP-style feature importance -->
+    <div class="shap-title">Feature Importance (SHAP-style contributions)</div>
+    <div id="shap-rows"></div>
+
+    <div class="disclaimer">
+      <strong>⚠️ Research Demo Only</strong> — This application demonstrates the multimodal AI pipeline architecture. The risk scores shown are <strong>simulated</strong> based on clinical heuristics and should <strong>NOT</strong> be used for medical diagnosis. All clinical decisions must be made by qualified healthcare professionals.
+    </div>
+  </div>
+
+</div>
+
+<!-- Spinner -->
+<div class="spinner-overlay" id="spinner">
+  <div class="spinner"></div>
+  <div class="spinner-text">Running multimodal inference...</div>
+</div>
+
+<script>
+  function sync(id, valId) {
+    document.getElementById(valId).textContent = document.getElementById(id).value;
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    showMriPreview(file);
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) showMriPreview(file);
+  }
+  function showMriPreview(file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('mri-img').src = ev.target.result;
+      document.getElementById('mri-fname').textContent = '📁 ' + file.name;
+      document.getElementById('mri-preview').style.display = 'block';
+      document.getElementById('dropzone').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function runPrediction() {
+    document.getElementById('spinner').classList.add('visible');
+    setTimeout(() => {
+      document.getElementById('spinner').classList.remove('visible');
+      computeAndShow();
+    }, 1800);
+  }
+
+  function computeAndShow() {
+    // Get values
+    const age    = +document.getElementById('age').value;
+    const mmse   = +document.getElementById('mmse').value;
+    const cdr    = +document.getElementById('cdr').value;
+    const memory = +document.getElementById('memory').value;
+    const apoe   = document.getElementById('apoe').value;
+    const sleep  = +document.getElementById('sleep').value;
+    const diet   = +document.getElementById('diet').value;
+    const social = +document.getElementById('social').value;
+    const smoking = document.getElementById('smoking').value;
+    const alcohol = document.getElementById('alcohol').value;
+    const activity = document.getElementById('activity').value;
+
+    // Compute branch scores (heuristic simulation)
+    // Clinical branch
+    let clinRisk = 0;
+    clinRisk += (age - 50) / 45 * 0.25;
+    clinRisk += (1 - mmse / 30) * 0.30;
+    clinRisk += cdr / 3 * 0.25;
+    clinRisk += (1 - memory / 100) * 0.20;
+    const apoeBonus = {e2e3: -0.12, e3e3: 0, e3e4: 0.15, e4e4: 0.28};
+    clinRisk += apoeBonus[apoe] || 0;
+    clinRisk = Math.max(0, Math.min(1, clinRisk));
+
+    // Lifestyle branch
+    let lifeRisk = 0;
+    lifeRisk += sleep < 6 ? 0.15 : sleep > 9 ? 0.05 : 0;
+    lifeRisk += (1 - diet / 10) * 0.20;
+    lifeRisk += (1 - social / 10) * 0.15;
+    const actBonus = {sedentary: 0.20, low: 0.10, moderate: 0, high: -0.10};
+    lifeRisk += actBonus[activity] || 0;
+    const smokeBonus = {never: 0, former: 0.07, current: 0.15};
+    lifeRisk += smokeBonus[smoking] || 0;
+    const alcBonus = {none: 0, light: -0.03, moderate: 0.05, heavy: 0.15};
+    lifeRisk += alcBonus[alcohol] || 0;
+    lifeRisk = Math.max(0, Math.min(1, lifeRisk));
+
+    // MRI branch (simulated — would come from CNN embedding)
+    const mriRisk = Math.max(0.05, Math.min(0.95, (clinRisk * 0.7 + Math.random() * 0.25 - 0.05)));
+
+    // Fusion (weighted average)
+    const fused = clinRisk * 0.45 + lifeRisk * 0.25 + mriRisk * 0.30;
+    const finalPct = Math.round(Math.min(99, Math.max(1, fused * 100)));
+
+    // Display
+    const gauge = document.getElementById('gauge-circle');
+    const circumference = 408;
+    const offset = circumference - (finalPct / 100) * circumference;
+    gauge.style.strokeDashoffset = offset;
+
+    let color, level, desc;
+    if (finalPct < 30) {
+      color = '#20c997'; level = '🟢 Low Risk'; desc = 'The patient shows minimal risk factors for Alzheimer\'s disease. Continued healthy lifestyle and regular monitoring recommended.';
+    } else if (finalPct < 60) {
+      color = '#ffa94d'; level = '🟡 Moderate Risk'; desc = 'Several risk factors are present. Lifestyle interventions and cognitive assessments every 12 months are recommended.';
+    } else {
+      color = '#ff4d6d'; level = '🔴 High Risk'; desc = 'Significant risk factors detected across multiple modalities. Immediate clinical evaluation and comprehensive neurological workup advised.';
+    }
+    gauge.style.stroke = color;
+
+    document.getElementById('pct-label').textContent = finalPct + '%';
+    document.getElementById('pct-label').style.color = color;
+    document.getElementById('risk-level').textContent = level;
+    document.getElementById('risk-level').style.color = color;
+    document.getElementById('risk-desc').textContent = desc;
+    document.getElementById('score-clinical').textContent = Math.round(clinRisk * 100) + '%';
+    document.getElementById('score-lifestyle').textContent = Math.round(lifeRisk * 100) + '%';
+    document.getElementById('score-mri').textContent = Math.round(mriRisk * 100) + '%';
+
+    // SHAP-style rows
+    const shapData = [
+      { feat: 'CDR Score', val: cdr / 3, label: (cdr/3*100).toFixed(0)+'%', col: '#ff6b6b' },
+      { feat: 'MMSE Score', val: 1 - mmse/30, label: ((1-mmse/30)*100).toFixed(0)+'%', col: '#ff6b6b' },
+      { feat: 'APOE Genotype', val: Math.max(0,(apoeBonus[apoe]||0)+0.15), label: apoe, col: '#f7a94d' },
+      { feat: 'Age', val: (age-50)/45, label: age, col: '#f7a94d' },
+      { feat: 'Physical Activity', val: 1 - (actBonus[activity] === undefined ? 0 : (actBonus[activity] < 0 ? 0.8 : 1 - actBonus[activity])), label: activity, col: '#69db7c' },
+      { feat: 'Diet Quality', val: 1 - diet/10, label: diet+'/10', col: '#69db7c' },
+      { feat: 'Sleep Hours', val: sleep<6?0.8:0.2, label: sleep+'h', col: '#74c0fc' },
+      { feat: 'Social Engagement', val: 1-social/10, label: social+'/10', col: '#74c0fc' },
+    ];
+    const shapHtml = shapData.map(s =>
+      `<div class="shap-row">
+        <div class="shap-feat">${s.feat}</div>
+        <div class="shap-bar-track">
+          <div class="shap-bar-fill" style="width:${Math.round(s.val*100)}%;background:${s.col}"></div>
+        </div>
+        <div class="shap-val" style="color:${s.col}">${s.label}</div>
+      </div>`
+    ).join('');
+    document.getElementById('shap-rows').innerHTML = shapHtml;
+
+    // Show result
+    const rc = document.getElementById('result-card');
+    rc.classList.add('visible');
+    rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>
